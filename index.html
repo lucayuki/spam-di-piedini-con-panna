@@ -68,7 +68,7 @@
       height: 160px;
       margin: 0 auto;
       touch-action: none;
-      overflow: hidden; /* evita che i bottoni escano dalla zona */
+      overflow: hidden;
     }
 
     button {
@@ -133,7 +133,6 @@
       box-shadow: 0 10px 24px rgba(0,0,0,.12);
     }
 
-    /* Mini controlli audio flottanti */
     .audio-controls {
       position: fixed;
       right: 12px;
@@ -171,7 +170,6 @@
   <canvas id="confettiCanvas"></canvas>
 
   <main class="card">
-    <!-- Disegno carino (SVG) -->
     <svg class="art" viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="fur" x1="0" x2="1">
@@ -184,14 +182,12 @@
         </linearGradient>
       </defs>
 
-      <!-- Cuore -->
       <path d="M250 50 C250 33 270 25 282 38
                C294 25 314 33 314 50
                C314 78 282 92 282 106
                C282 92 250 78 250 50Z"
             fill="url(#heart)"/>
 
-      <!-- Animaletto -->
       <path d="M90 120 C90 70 140 40 190 60
                C240 40 290 70 290 120
                C290 180 240 210 190 210
@@ -211,22 +207,19 @@
             fill="#ff7aa2"/>
     </svg>
 
-    <!-- Titolo modificato (PG) -->
     <h1>dika will you go out with me and parlare di pi3dini?</h1>
 
     <section class="button-zone" id="zone">
       <button id="yesBtn" aria-label="Yes">Yes</button>
-      <button id="noBtn"  aria-label="No">No</button>
+      <button id="noBtn" aria-label="No">No</button>
     </section>
 
     <div class="hint" id="hint">“No” sembra un po’ timido 😈</div>
 
-    <!-- RISULTATO: testo + sotto-testo + GIF incorporata -->
     <section class="result" id="result" aria-live="polite">
       <h2>FINALMENTE NON MI PACCHI &lt;3</h2>
-      <p class="subtext">sabato alle 12:00 ristorante wencheng, ti prego non mi paccare :( </p>
+      <p class="subtext">domenica 1° marzo alle 12:00 a paolo sarpi per parata del drago e dei piedini, ti prego non mi paccare dinuovo :(</p>
 
-      <!-- GIF visibile direttamente -->
       <img
         class="gif"
         alt="Yay celebrativo"
@@ -235,16 +228,13 @@
     </section>
   </main>
 
-  <!-- 🔊 Opzione A: audio locale (fallback opzionale) -->
   <audio id="bgAudio" preload="none" loop></audio>
 
-  <!-- 🔊 Opzione B: YouTube embed (parte al click su YES) -->
   <div id="yt-container" style="position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; overflow:hidden;">
     <div id="ytplayer"></div>
   </div>
 
   <script>
-    // Carica l'API di YouTube in modo lazy
     (function loadYT(){
       const tag = document.createElement('script');
       tag.src = "https://www.youtube.com/iframe_api";
@@ -252,7 +242,6 @@
     })();
 
     let ytPlayer = null;
-    // Drake - Hotline Bling (ID dall'URL: https://www.youtube.com/watch?v=dRP4FTUSS1I)
     const YT_VIDEO_ID = "dRP4FTUSS1I";
     function onYouTubeIframeAPIReady() {
       ytPlayer = new YT.Player('ytplayer', {
@@ -260,7 +249,7 @@
         width: '320',
         videoId: YT_VIDEO_ID,
         playerVars: {
-          autoplay: 0, // avvio manuale su click Yes (gesto utente)
+          autoplay: 0,
           controls: 0,
           modestbranding: 1,
           rel: 0,
@@ -271,7 +260,6 @@
     window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
   </script>
 
-  <!-- Controlli audio (play/pausa/muto) -->
   <div class="audio-controls" id="audioControls" style="display:none;">
     <span>🎵 Hotline Bling</span>
     <button id="btnToggle">⏸︎ Pausa</button>
@@ -286,7 +274,6 @@
     const hint = document.getElementById("hint");
     const confettiCanvas = document.getElementById("confettiCanvas");
 
-    /* ---------- Confetti fullscreen ---------- */
     function resizeConfettiCanvas() {
       const dpr = Math.max(1, window.devicePixelRatio || 1);
       confettiCanvas.width = Math.floor(window.innerWidth * dpr);
@@ -324,18 +311,15 @@
       }, 300);
     }
 
-    /* ---------- YES cresce ---------- */
     let yesScale = 1;
     function growYes(amount = 0.12) {
       yesScale = Math.min(2.4, yesScale + amount);
       yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
     }
 
-    /* ---------- Utilità ---------- */
     const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
     const rand = (min, max) => Math.random() * (max - min) + min;
 
-    /* ---------- NO scappa ---------- */
     const SAFE_RADIUS = 170;
     const PUSH_DISTANCE = 210;
 
@@ -392,13 +376,12 @@
     });
     noBtn.addEventListener("focus", () => noBtn.blur());
 
-    /* ---------- Audio helpers ---------- */
     const bgAudio = document.getElementById('bgAudio');
     const audioControls = document.getElementById('audioControls');
     const btnToggle = document.getElementById('btnToggle');
     const btnMute = document.getElementById('btnMute');
 
-    let currentSource = 'none'; // 'audio' | 'youtube' | 'none'
+    let currentSource = 'none';
     let isMuted = false;
 
     function showControls() {
@@ -435,7 +418,6 @@
     }
 
     async function startMusic() {
-      // Preferisci YouTube; se fallisce e hai un file locale, usa quello
       try {
         await tryPlayYouTube();
       } catch {
@@ -447,7 +429,6 @@
       }
     }
 
-    // Controlli play/pausa
     btnToggle.addEventListener('click', () => {
       if (currentSource === 'audio') {
         if (bgAudio.paused) { bgAudio.play(); btnToggle.textContent = '⏸︎ Pausa'; }
@@ -459,7 +440,6 @@
       }
     });
 
-    // Controllo muto
     btnMute.addEventListener('click', () => {
       isMuted = !isMuted;
       if (currentSource === 'audio') {
@@ -470,15 +450,12 @@
       btnMute.textContent = isMuted ? '🔊 Audio' : '🔇 Muto';
     });
 
-    /* ---------- YES click: mostra risultato, confetti e musica ---------- */
     yesBtn.addEventListener("click", async () => {
       zone.style.display = "none";
       hint.style.display = "none";
       result.style.display = "block";
       resizeConfettiCanvas();
       fullScreenConfetti();
-
-      // Avvia musica dopo gesto utente (compatibile con autoplay policy)
       startMusic();
     });
   </script>
